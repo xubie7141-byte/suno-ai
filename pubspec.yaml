@@ -56,7 +56,7 @@ dependencies:
   json_annotation: ^4.8.1
 
   # 权限处理
-  permission_handler: ^11.4.4
+  permission_handler: ^11.0.1
 
   # 分享和导出
   share_plus: ^7.0.2
@@ -96,3 +96,4 @@ android:
   compileSdkVersion: 34
   minSdkVersion: 24
   targetSdkVersion: 34
+
