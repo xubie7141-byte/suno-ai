@@ -8,7 +8,7 @@
     <application
         android:label="李七夕AI"
         android:name="${applicationName}"
-        android:icon="@android:drawable/sym_def_app_icon"
+        android:icon="@android:drawable/ic_menu_compass"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
@@ -32,4 +32,3 @@
             android:value="2" />
     </application>
 </manifest>
-
