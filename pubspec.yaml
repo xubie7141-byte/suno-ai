@@ -81,16 +81,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  assets:
-    - assets/images/
-    - assets/animations/
 
-  fonts:
-    - family: ProductSans
-      fonts:
-        - asset: assets/fonts/ProductSans-Regular.ttf
-        - asset: assets/fonts/ProductSans-Bold.ttf
-          weight: 700
 
 
 
