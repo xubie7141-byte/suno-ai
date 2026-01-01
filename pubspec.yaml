@@ -1,0 +1,98 @@
+name: suno_ai_app
+description: AI音乐生成平台 - 集成Suno、数字人视频、AI绘画、音乐广场等功能的完整应用
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI 和布局
+  cupertino_icons: ^1.0.2
+  google_fonts: ^6.1.0
+  flutter_svg: ^2.0.7
+
+  # 网络请求
+  http: ^1.1.0
+  dio: ^5.3.1
+
+  # 状态管理
+  provider: ^6.0.0
+  riverpod: ^2.4.0
+  riverpod_generator: ^2.3.0
+
+  # 本地存储
+  sqflite: ^2.3.0
+  path_provider: ^2.1.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # 音频播放
+  audioplayers: ^5.2.0
+  just_audio: ^0.9.36
+
+  # 文件处理
+  file_picker: ^6.0.0
+  image_picker: ^1.0.4
+  video_player: ^2.7.2
+
+  # 加载和缓存
+  cached_network_image: ^3.3.0
+  flutter_cache_manager: ^3.3.1
+
+  # 日期时间处理
+  intl: ^0.19.0
+
+  # 本地数据库 ORM
+  floor: ^1.4.0
+
+  # API 模型生成
+  json_serializable: ^6.7.1
+  json_annotation: ^4.8.1
+
+  # 权限处理
+  permission_handler: ^11.4.4
+
+  # 分享和导出
+  share_plus: ^7.0.2
+
+  # 动画和过渡
+  animations: ^2.0.7
+
+  # 键值对存储
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.6
+  floor_generator: ^1.4.0
+  json_serializable: ^6.7.1
+  hive_generator: ^2.0.1
+  riverpod_generator: ^2.3.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/animations/
+
+  fonts:
+    - family: ProductSans
+      fonts:
+        - asset: assets/fonts/ProductSans-Regular.ttf
+        - asset: assets/fonts/ProductSans-Bold.ttf
+          weight: 700
+
+android:
+  compileSdkVersion: 34
+  minSdkVersion: 24
+  targetSdkVersion: 34
