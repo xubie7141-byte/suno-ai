@@ -1,485 +1,225 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../services/ai_api_service.dart';
+import 'settings_screen.dart';
 
-class AiToolsScreen extends StatefulWidget {
-  const AiToolsScreen({Key? key}) : super(key: key);
+class AiToolsScreen extends StatelessWidget {
+  const AiToolsScreen({super.key});
 
-  @override
-  State<AiToolsScreen> createState() => _AiToolsScreenState();
-}
-
-class _AiToolsScreenState extends State<AiToolsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
-        title: const Text('AI工具集'),
+        title: const Text('AI创作工具', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF16213E),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
+            tooltip: 'API设置',
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 0.85,
           children: [
-            // AI数字人
-            _buildToolCard(
-              icon: '🎭',
-              title: 'AI数字人',
-              subtitle: '创建智能虚拟化身',
-              color: Colors.blue,
-              onTap: () => _showToolDetail(context, 'AI数字人', 'ai_avatar'),
-            ),
-            const SizedBox(height: 12),
-
-            // AI文案
-            _buildToolCard(
-              icon: '✍️',
-              title: 'AI文案',
-              subtitle: '快速生成营销文案',
-              color: Colors.green,
-              onTap: () => _showToolDetail(context, 'AI文案', 'ai_copywriting'),
-            ),
-            const SizedBox(height: 12),
-
-            // AI视频
-            _buildToolCard(
-              icon: '🎬',
-              title: 'AI视频',
-              subtitle: '生成高质量视频内容',
-              color: Colors.purple,
-              onTap: () => _showToolDetail(context, 'AI视频', 'ai_video'),
-            ),
-            const SizedBox(height: 12),
-
-            // AI音乐
-            _buildToolCard(
-              icon: '🎵',
-              title: 'AI音乐',
-              subtitle: '生成高质量音乐',
-              color: Colors.red,
-              onTap: () => _showToolDetail(context, 'AI音乐', 'ai_music'),
-            ),
-            const SizedBox(height: 12),
-
-            // AI绘画
-            _buildToolCard(
-              icon: '🎨',
-              title: 'AI绘画',
-              subtitle: '快速生成图片',
-              color: Colors.orange,
-              onTap: () => _showToolDetail(context, 'AI绘画', 'ai_image'),
-            ),
-            const SizedBox(height: 12),
-
-            // AI PPT
-            _buildToolCard(
-              icon: '📊',
-              title: 'AI PPT',
-              subtitle: '快速生成演示文稿',
-              color: Colors.teal,
-              onTap: () => _showToolDetail(context, 'AI PPT', 'ai_ppt'),
-            ),
+            _buildToolCard(context, title: 'AI文案', subtitle: '智能生成营销文案', icon: Icons.edit_note, gradient: [Colors.blue.shade700, Colors.blue.shade900], toolType: 'copywriting'),
+            _buildToolCard(context, title: 'AI绘画', subtitle: 'AI艺术图像生成', icon: Icons.palette, gradient: [Colors.purple.shade700, Colors.purple.shade900], toolType: 'image'),
+            _buildToolCard(context, title: 'AI音乐', subtitle: 'AI作曲生成音乐', icon: Icons.music_note, gradient: [Colors.orange.shade700, Colors.orange.shade900], toolType: 'music'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildToolCard({
-    required String icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-            ),
-          ),
+  Widget _buildToolCard(BuildContext context, {required String title, required String subtitle, required IconData icon, required List<Color> gradient, required String toolType}) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AiToolDetailScreen(toolType: toolType))),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: gradient),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [BoxShadow(color: gradient[0].withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))],
+        ),
+        child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 图标
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(icon, style: const TextStyle(fontSize: 30)),
-                ),
-              ),
-              const SizedBox(width: 16),
-
-              // 文字
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // 箭头
-              Icon(Icons.arrow_forward, color: color),
+              Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle), child: Icon(icon, size: 40, color: Colors.white)),
+              const SizedBox(height: 16),
+              Text(title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(subtitle, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12), textAlign: TextAlign.center),
             ],
           ),
         ),
       ),
     );
   }
-
-  void _showToolDetail(BuildContext context, String toolName, String toolType) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AiToolDetailScreen(
-          toolName: toolName,
-          toolType: toolType,
-        ),
-      ),
-    );
-  }
 }
 
-// AI工具详情屏幕
 class AiToolDetailScreen extends StatefulWidget {
-  final String toolName;
   final String toolType;
-
-  const AiToolDetailScreen({
-    Key? key,
-    required this.toolName,
-    required this.toolType,
-  }) : super(key: key);
-
+  const AiToolDetailScreen({super.key, required this.toolType});
   @override
   State<AiToolDetailScreen> createState() => _AiToolDetailScreenState();
 }
 
 class _AiToolDetailScreenState extends State<AiToolDetailScreen> {
-  bool isLoading = false;
+  final _inputCtrl = TextEditingController();
+  bool _loading = false;
+  String? _result;
+  String? _error;
+  String _copyType = '广告';
+  String _imageStyle = 'realistic';
+  int _musicDuration = 10;
+
+  String get _title => {'copywriting': 'AI文案', 'image': 'AI绘画', 'music': 'AI音乐'}[widget.toolType] ?? 'AI工具';
+  String get _hint => {'copywriting': '描述您的产品或服务...', 'image': '描述您想生成的图像...', 'music': '描述您想要的音乐风格...'}[widget.toolType] ?? '输入需求...';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
-        title: Text(widget.toolName),
+        title: Text(_title, style: const TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF16213E),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [IconButton(icon: const Icon(Icons.settings), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())))],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 输入区域
-            _buildInputArea(),
-            const SizedBox(height: 24),
-
-            // 生成按钮
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : _generateContent,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple.shade700,
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : Text('生成${widget.toolName}'),
+            _buildOptions(),
+            const SizedBox(height: 20),
+            const Text('输入描述', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _inputCtrl,
+              maxLines: 4,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: _hint,
+                hintStyle: TextStyle(color: Colors.grey.shade600),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.1),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
               ),
             ),
             const SizedBox(height: 24),
-
-            // 结果区域
-            if (isLoading)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    Text('正在生成${widget.toolName}，请稍候...'),
-                  ],
-                ),
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: ElevatedButton(
+                onPressed: _loading ? null : _generate,
+                style: ElevatedButton.styleFrom(backgroundColor: _loading ? Colors.grey : Colors.blue, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                child: _loading
+                    ? const Row(mainAxisAlignment: MainAxisAlignment.center, children: [SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)), SizedBox(width: 12), Text('生成中...', style: TextStyle(color: Colors.white))])
+                    : const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.auto_awesome, color: Colors.white), SizedBox(width: 8), Text('开始生成', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white))]),
               ),
+            ),
+            const SizedBox(height: 24),
+            if (_error != null) Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.red.withOpacity(0.2), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.red)), child: Row(children: [const Icon(Icons.error, color: Colors.red), const SizedBox(width: 12), Expanded(child: Text(_error!, style: const TextStyle(color: Colors.red)))])),
+            if (_result != null) _buildResult(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInputArea() {
-    switch (widget.toolType) {
-      case 'ai_avatar':
-        return _buildAvatarInput();
-      case 'ai_copywriting':
-        return _buildCopywritingInput();
-      case 'ai_video':
-        return _buildVideoInput();
-      case 'ai_music':
-        return _buildMusicInput();
-      case 'ai_image':
-        return _buildImageInput();
-      case 'ai_ppt':
-        return _buildPptInput();
-      default:
-        return const SizedBox();
+  Widget _buildOptions() {
+    if (widget.toolType == 'copywriting') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('文案类型', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Wrap(spacing: 10, children: ['广告', '社媒', '产品', '邮件'].map((t) => ChoiceChip(label: Text(t), selected: t == _copyType, onSelected: (_) => setState(() => _copyType = t), selectedColor: Colors.blue, labelStyle: TextStyle(color: t == _copyType ? Colors.white : Colors.grey), backgroundColor: Colors.white.withOpacity(0.1))).toList()),
+      ]);
+    } else if (widget.toolType == 'image') {
+      final styles = {'realistic': '写实', 'anime': '动漫', 'oil_painting': '油画', 'watercolor': '水彩', 'cartoon': '卡通'};
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('图像风格', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Wrap(spacing: 10, runSpacing: 10, children: styles.entries.map((e) => ChoiceChip(label: Text(e.value), selected: e.key == _imageStyle, onSelected: (_) => setState(() => _imageStyle = e.key), selectedColor: Colors.purple, labelStyle: TextStyle(color: e.key == _imageStyle ? Colors.white : Colors.grey), backgroundColor: Colors.white.withOpacity(0.1))).toList()),
+      ]);
+    } else if (widget.toolType == 'music') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('音乐时长', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Row(children: [
+          Expanded(child: Slider(value: _musicDuration.toDouble(), min: 5, max: 30, divisions: 5, label: '\秒', activeColor: Colors.orange, onChanged: (v) => setState(() => _musicDuration = v.round()))),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: Colors.orange.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text('\秒', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))),
+        ]),
+      ]);
+    }
+    return const SizedBox();
+  }
+
+  Widget _buildResult() {
+    if (widget.toolType == 'copywriting') {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.blue.withOpacity(0.5))),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Row(children: [Icon(Icons.check_circle, color: Colors.green), SizedBox(width: 8), Text('生成结果', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))]),
+          const SizedBox(height: 12),
+          SelectableText(_result!, style: const TextStyle(color: Colors.white, height: 1.6)),
+        ]),
+      );
+    } else if (widget.toolType == 'image') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Row(children: [Icon(Icons.check_circle, color: Colors.green), SizedBox(width: 8), Text('生成的图像', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))]),
+        const SizedBox(height: 12),
+        ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.network(_result!, fit: BoxFit.cover, loadingBuilder: (c, child, p) => p == null ? child : Container(height: 300, alignment: Alignment.center, child: const CircularProgressIndicator()))),
+      ]);
+    } else if (widget.toolType == 'music') {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.orange.withOpacity(0.5))),
+        child: Column(children: [
+          const Row(children: [Icon(Icons.check_circle, color: Colors.green), SizedBox(width: 8), Text('音乐生成完成', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))]),
+          const SizedBox(height: 16),
+          Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.orange.shade900, Colors.orange.shade700]), borderRadius: BorderRadius.circular(12)), child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.music_note, color: Colors.white, size: 32), SizedBox(width: 12), Text('您的AI音乐', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])),
+          const SizedBox(height: 16),
+          SizedBox(width: double.infinity, child: ElevatedButton.icon(onPressed: () async { final uri = Uri.parse(_result!); if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication); }, icon: const Icon(Icons.download, color: Colors.white), label: const Text('下载音乐', style: TextStyle(color: Colors.white)), style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: const EdgeInsets.symmetric(vertical: 14)))),
+        ]),
+      );
+    }
+    return Text(_result!, style: const TextStyle(color: Colors.white));
+  }
+
+  Future<void> _generate() async {
+    final input = _inputCtrl.text.trim();
+    if (input.isEmpty) { setState(() => _error = '请输入内容'); return; }
+    setState(() { _loading = true; _error = null; _result = null; });
+    try {
+      String result;
+      if (widget.toolType == 'copywriting') {
+        result = await AiApiService.generateCopywriting(prompt: input, type: _copyType);
+      } else if (widget.toolType == 'image') {
+        result = await AiApiService.generateImage(prompt: input, style: _imageStyle);
+      } else if (widget.toolType == 'music') {
+        result = await AiApiService.generateMusic(prompt: input, duration: _musicDuration);
+      } else {
+        throw Exception('未知工具类型');
+      }
+      setState(() => _result = result);
+    } catch (e) {
+      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      setState(() => _loading = false);
     }
   }
 
-  Widget _buildAvatarInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('选择虚拟形象', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _buildAvatarOption('👩 女性', 'female'),
-              _buildAvatarOption('👨 男性', 'male'),
-              _buildAvatarOption('🧑 中性', 'neutral'),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text('配置语音', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '女声', child: Text('女声')),
-            DropdownMenuItem(value: '男声', child: Text('男声')),
-            DropdownMenuItem(value: '中性', child: Text('中性')),
-          ],
-          onChanged: (value) {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvatarOption(String label, String type) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.purple),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(label),
-      ),
-    );
-  }
-
-  Widget _buildCopywritingInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('文案类型', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '广告', child: Text('广告文案')),
-            DropdownMenuItem(value: '社媒', child: Text('社交媒体')),
-            DropdownMenuItem(value: '产品', child: Text('产品描述')),
-            DropdownMenuItem(value: '邮件', child: Text('邮件营销')),
-          ],
-          onChanged: (value) {},
-        ),
-        const SizedBox(height: 16),
-        const Text('描述产品或主题', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: '输入产品名称或需求...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          maxLines: 3,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildVideoInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('视频类型', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '宣传', child: Text('产品宣传视频')),
-            DropdownMenuItem(value: '教程', child: Text('教程视频')),
-            DropdownMenuItem(value: '故事', child: Text('故事视频')),
-            DropdownMenuItem(value: '音乐', child: Text('音乐视频')),
-          ],
-          onChanged: (value) {},
-        ),
-        const SizedBox(height: 16),
-        const Text('视频脚本或描述', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: '输入视频脚本...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          maxLines: 4,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMusicInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('音乐风格', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '流行', child: Text('流行')),
-            DropdownMenuItem(value: '摇滚', child: Text('摇滚')),
-            DropdownMenuItem(value: '爵士', child: Text('爵士')),
-            DropdownMenuItem(value: '古典', child: Text('古典')),
-            DropdownMenuItem(value: '电子', child: Text('电子')),
-          ],
-          onChanged: (value) {},
-        ),
-        const SizedBox(height: 16),
-        const Text('心情', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '欢快', child: Text('欢快')),
-            DropdownMenuItem(value: '悲伤', child: Text('悲伤')),
-            DropdownMenuItem(value: '平静', child: Text('平静')),
-            DropdownMenuItem(value: '激烈', child: Text('激烈')),
-          ],
-          onChanged: (value) {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildImageInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('图片描述', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: '描述你想要的图片...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          maxLines: 4,
-        ),
-        const SizedBox(height: 16),
-        const Text('风格', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '写实', child: Text('写实')),
-            DropdownMenuItem(value: '卡通', child: Text('卡通')),
-            DropdownMenuItem(value: '油画', child: Text('油画')),
-            DropdownMenuItem(value: '水彩', child: Text('水彩')),
-            DropdownMenuItem(value: '素描', child: Text('素描')),
-          ],
-          onChanged: (value) {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPptInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('演示主题', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: '输入演示主题...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text('幻灯片数量', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        DropdownButton(
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: '5', child: Text('5张')),
-            DropdownMenuItem(value: '10', child: Text('10张')),
-            DropdownMenuItem(value: '15', child: Text('15张')),
-            DropdownMenuItem(value: '20', child: Text('20张')),
-          ],
-          onChanged: (value) {},
-        ),
-        const SizedBox(height: 16),
-        const Text('内容大纲', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: '输入主要内容和要点...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          maxLines: 3,
-        ),
-      ],
-    );
-  }
-
-  void _generateContent() {
-    setState(() {
-      isLoading = true;
-    });
-
-    // 模拟生成过程
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        isLoading = false;
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${widget.toolName}生成成功！'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    });
-  }
+  @override
+  void dispose() { _inputCtrl.dispose(); super.dispose(); }
 }
