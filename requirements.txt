@@ -1,0 +1,39 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+sqlalchemy==2.0.23
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+tortoise-orm==0.20.0
+
+# AI/ML 依赖
+torch==2.1.1
+torchaudio==2.1.1
+librosa==0.10.0
+scipy==1.11.4
+numpy==1.24.3
+pillow==10.1.0
+opencv-python==4.8.1.78
+
+# 音乐生成
+transformers==4.35.2
+diffusers==0.24.0
+accelerate==0.24.1
+
+# 音频处理
+soundfile==0.12.1
+moviepy==1.0.3
+ffmpeg-python==0.2.1
+
+# 数据库
+psycopg2-binary==2.9.9
+aiosqlite==3.14.0
+
+# 缓存和队列
+redis==5.0.1
+celery==5.3.4
+
+# 其他工具
+requests==2.31.0
+aiohttp==3.9.1
+httpx==0.25.1
